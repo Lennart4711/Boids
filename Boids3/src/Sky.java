@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class Sky{
@@ -8,7 +8,7 @@ public class Sky{
     private Boid ball;
     private Boid[] subSwarm;
 
-    private ArrayList[][] boidGrid;
+    private LinkedList[][] boidGrid;
 
     public Sky(int height, int width, int boids) {
         //for Canvas size
@@ -22,11 +22,11 @@ public class Sky{
         }
 
         //init Grid
-        boidGrid = new ArrayList[width/Boid.visibility][height/Boid.visibility]; //One Grid is as large as the visibility
+        boidGrid = new LinkedList[width/Boid.visibility][height/Boid.visibility]; //One Grid is as large as the visibility
 
         for(int x = 0; x<boidGrid.length; x++) {
             for (int y=0; y<boidGrid[x].length; y++) {
-                ArrayList<Boid> severalBoids = new ArrayList<Boid>(); //new List for each Grid field
+                LinkedList<Boid> severalBoids = new LinkedList<Boid>(); //new List for each Grid field
                 boidGrid[x][y] = severalBoids;
             }
         }
@@ -75,7 +75,7 @@ public class Sky{
 
     private Boid[] inRange(Boid pBoid) {
 
-        ArrayList<Boid> tmpBoids = new ArrayList<Boid>();
+        LinkedList<Boid> tmpBoids = new LinkedList<Boid>();
         ListIterator<Boid> listIterator;
         //get Grid coord
         int gridx = (int)(pBoid.getxPos()/Boid.visibility);
