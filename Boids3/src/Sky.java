@@ -110,6 +110,8 @@ public class Sky{
             //updates the boids x,y based on the velocity
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
+            
+            updateGrid();
         }
         //calcLeader();
         Canvas.getInstance().repaint();
