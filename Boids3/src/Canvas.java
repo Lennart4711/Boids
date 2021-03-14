@@ -77,7 +77,6 @@ public class Canvas
         {
             frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setUndecorated(true);
             frame.add(component);
             frame.pack();
             frame.setLocation(0,0);
