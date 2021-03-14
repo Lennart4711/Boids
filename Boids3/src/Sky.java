@@ -97,10 +97,10 @@ public class Sky{
                 }
             }
         }
-        System.out.println((System.nanoTime()-start+ "ns in range"));
+        //System.out.println((System.nanoTime()-start+ "ns in range"));
         long start2 = System.nanoTime();
         Boid[] retB = tmpBoids.toArray(new Boid[tmpBoids.size()]);
-        System.out.println(System.nanoTime()-start2+" array time");
+        //System.out.println(System.nanoTime()-start2+" array time");
         return retB;
     }
 
@@ -111,8 +111,8 @@ public class Sky{
             //choose boids in grids in visibility
 
             long start = System.nanoTime();
-            //b.flock(inRange(b));
-            b.flock(swarm);
+            b.flock(inRange(b));
+            //b.flock(swarm);
             System.out.println(System.nanoTime()-start+" ns for flock \n");
 
             b.keepInBound();
@@ -125,8 +125,9 @@ public class Sky{
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
             
-            updateGrid();
+            
         }
+        updateGrid();
         //calcLeader();
         Canvas.getInstance().repaint();
     }
@@ -145,7 +146,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1600,2400, 50);
+        Sky sky = new Sky(1600,2400, 4000);
         long lastTime;
         double avg = 0;
         int i = 1;
