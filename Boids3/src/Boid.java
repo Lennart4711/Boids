@@ -1,5 +1,5 @@
 import java.awt.*;
-import java.util.Random;
+import java.util.*;
 
 public class Boid {
     private Random random = new Random();
@@ -10,7 +10,7 @@ public class Boid {
 
     private final int margin = 150;//distance to edge to steer away from it
     private final double marginFactor = 0.5;//how hard the Boid turns away from edge
-    private final int visibility = 80;//visual range of any Boid
+    public static final int visibility = 80;//visual range of any Boid
     private final double alignmentFactor = 0.05;//how hard the Boid steers into same direction as other
     private final double cohesionFactor = 0.007;//how hard the Boids steers towards the center of all Boids in range
     private final int speedLimit = 7;

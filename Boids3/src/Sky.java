@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+
 public class Sky{
     public static int width, height;
 
     private static Boid[] swarm;
     private Boid ball;
+
+    private ArrayList[][] boidGrid;
 
     public Sky(int height, int width, int boids) {
         //for Canvas size
@@ -14,6 +18,29 @@ public class Sky{
         for(int i =0; i<swarm.length; i++) {
             swarm[i] = new Boid(width, height);
         }
+
+        //init Grid
+        boidGrid = new ArrayList[width/Boid.visibility][height/Boid.visibility]; //One Grid is as large as the visibility
+
+        for(int x = 0; x<boidGrid.length; x++) {
+            for (int y=0; y<boidGrid[x].length; y++) {
+                ArrayList<Boid> severalBoids = new ArrayList<Boid>(); //new List for each Grid field
+                boidGrid[x][y] = severalBoids;
+            }
+        }
+        System.out.println("Grid size is " + width/Boid.visibility + " x " + height/Boid.visibility);
+        fillNewGridWithSwarm(swarm);
+    }
+
+    private void fillNewGridWithSwarm (Boid[] pSwarm) {
+        for (Boid b : pSwarm) {
+            double x = b.getxPos();
+            double y = b.getyPos();
+            int gridX = (int)(x/Boid.visibility);
+            int gridY = (int)(y/Boid.visibility);
+            boidGrid[gridX][gridY].add(b);
+        }
+        System.out.println("New Swarm filled in Grid.");
     }
 
     public void update() {
