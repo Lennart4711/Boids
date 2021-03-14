@@ -87,13 +87,17 @@ public class Sky{
                 try {
                     int relGridX = gridx - dx;
                     int relGridY = gridy - dy;
-                    listIterator = boidGrid[relGridX][relGridY].listIterator();
-                    while(listIterator.hasNext()) {
-                        tmpBoids.add(listIterator.next());
+
+                    if (relGridX>=0 && relGridY>=0) {
+                        listIterator = boidGrid[relGridX][relGridY].listIterator();
+
+                        while (listIterator.hasNext()) {
+                            tmpBoids.add(listIterator.next());
+                        }
                     }
                 } catch (ArrayIndexOutOfBoundsException aiobe) {
-                    continue;
                     //System.out.println("raus");
+                    continue;
                 }
             }
         }
@@ -146,7 +150,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1600,2400, 8000);
+        Sky sky = new Sky(960,1600, 8000);
         long lastTime;
         double avg = 0;
         int i = 1;

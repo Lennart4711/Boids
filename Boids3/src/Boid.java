@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Boid {
@@ -8,8 +9,8 @@ public class Boid {
     private Ellipse body;
     private Line vec;
 
-    private final int margin = 150;//distance to edge to steer away from it
-    private final double marginFactor = 0.5;//how hard the Boid turns away from edge
+    private final int margin = 80;//distance to edge to steer away from it
+    private final double marginFactor = 1;//how hard the Boid turns away from edge
     public static final int visibility = 80;//visual range of any Boid
     private final double alignmentFactor = 0.05;//how hard the Boid steers into same direction as other
     private final double cohesionFactor = 0.007;//how hard the Boids steers towards the center of all Boids in range
@@ -34,6 +35,7 @@ public class Boid {
         vec.draw();
          */
     }
+
 
     public void flock(Boid[] boids) {
         double avgDX = 0;
