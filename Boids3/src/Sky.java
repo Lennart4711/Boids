@@ -113,7 +113,7 @@ public class Sky{
             long start = System.nanoTime();
             b.flock(inRange(b));
             //b.flock(swarm);
-            System.out.println(System.nanoTime()-start+" ns for flock \n");
+            //System.out.println(System.nanoTime()-start+" ns for flock \n");
 
             b.keepInBound();
             b.limitSpeed();
