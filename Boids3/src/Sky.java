@@ -125,7 +125,7 @@ public class Sky{
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
             
-            //updateGrid();
+            updateGrid();
         }
         //calcLeader();
         Canvas.getInstance().repaint();
@@ -145,7 +145,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1600,2400, 3000);
+        Sky sky = new Sky(1600,2400, 50);
         long lastTime;
         double avg = 0;
         int i = 1;
