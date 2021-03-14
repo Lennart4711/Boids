@@ -48,16 +48,22 @@ public class Sky{
     private void updateGrid () {
         for(int x = 0; x<boidGrid.length; x++) {
             for (int y=0; y<boidGrid[x].length; y++) {
-                ListIterator<Boid> listIterator = boidGrid[x][y].listIterator(boidGrid[x][y].size());
+                ListIterator<Boid> listIterator = boidGrid[x][y].listIterator();
                 while(listIterator.hasNext()) {
-                    Boid tmpBoid = listIterator.previous();
+                    Boid tmpBoid = listIterator.next();
                     double boidx = tmpBoid.getxPos();
                     double boidy = tmpBoid.getyPos();
                     if ((x == (int)(boidx/Boid.visibility)) && (y == (int)(boidy/Boid.visibility))) {
                         continue;
                     } else { //put into new gridelement
                         listIterator.remove();
-                        boidGrid[(int)(boidx/Boid.visibility)][(int)(boidy/Boid.visibility)].add(tmpBoid);
+                        int gridX =(int)(boidx/Boid.visibility);
+                        int gridY = (int)(boidy/Boid.visibility);
+                        try {
+                            boidGrid[gridX][gridY].add(tmpBoid);
+                        }catch (ArrayIndexOutOfBoundsException indexOutOfBoundsException){
+                            System.out.println(gridX + "; " + gridY);
+                        }
                     }
 
                 }
@@ -69,19 +75,21 @@ public class Sky{
 
     private Boid[] inRange(Boid pBoid) {
 
-        ArrayList<Boid> tmpBoids = new ArrayList<>();
+        ArrayList<Boid> tmpBoids = new ArrayList<Boid>();
+        ListIterator<Boid> listIterator;
         //get Grid coord
         int gridx = (int)(pBoid.getxPos()/Boid.visibility);
         int gridy = (int)(pBoid.getyPos()/Boid.visibility);
 
+        long start = System.nanoTime();
         for (int dx = -1; dx<2; dx++) {
             for(int dy = -1; dy<2; dy++){
                 try {
                     int relGridX = gridx - dx;
                     int relGridY = gridy - dy;
-                    ListIterator<Boid> listIterator = boidGrid[relGridX][relGridY].listIterator(boidGrid[relGridX][relGridY].size());
+                    listIterator = boidGrid[relGridX][relGridY].listIterator();
                     while(listIterator.hasNext()) {
-                        tmpBoids.add(listIterator.previous());
+                        tmpBoids.add(listIterator.next());
                     }
                 } catch (ArrayIndexOutOfBoundsException aiobe) {
                     continue;
@@ -89,7 +97,11 @@ public class Sky{
                 }
             }
         }
-        return tmpBoids.toArray(new Boid[tmpBoids.size()]);
+        System.out.println((System.nanoTime()-start+ "ns in range"));
+        long start2 = System.nanoTime();
+        Boid[] retB = tmpBoids.toArray(new Boid[tmpBoids.size()]);
+        System.out.println(System.nanoTime()-start2+" array time");
+        return retB;
     }
 
 
@@ -98,9 +110,11 @@ public class Sky{
 
             //choose boids in grids in visibility
 
+            long start = System.nanoTime();
+            //b.flock(inRange(b));
+            b.flock(swarm);
+            System.out.println(System.nanoTime()-start+" ns for flock \n");
 
-            b.flock(inRange(b));
-            //b.flock(swarm);
             b.keepInBound();
             b.limitSpeed();
             // b.resetBounds();
@@ -111,7 +125,7 @@ public class Sky{
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
             
-            updateGrid();
+            //updateGrid();
         }
         //calcLeader();
         Canvas.getInstance().repaint();
@@ -131,7 +145,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1200,2400, 1000);
+        Sky sky = new Sky(1600,2400, 3000);
         long lastTime;
         double avg = 0;
         int i = 1;
@@ -140,10 +154,8 @@ public class Sky{
             lastTime = System.nanoTime();
             sky.update();
             avg += (1000000000.0 / (System.nanoTime() - lastTime));
-            //System.out.println(avg/i);
+            System.out.println(avg/i);
             i++;
-            System.out.println(swarm[123].getxPos());
-
         }
     }
 }

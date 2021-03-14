@@ -1,5 +1,5 @@
 import java.awt.*;
-import java.util.*;
+import java.util.Random;
 
 public class Boid {
     private Random random = new Random();
