@@ -47,7 +47,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1200,2400, 2000);
+        Sky sky = new Sky(1200,2400, 1000);
         long lastTime;
         double avg = 0;
         int i = 1;
