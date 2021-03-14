@@ -62,7 +62,7 @@ public class Sky{
                         try {
                             boidGrid[gridX][gridY].add(tmpBoid);
                         }catch (ArrayIndexOutOfBoundsException indexOutOfBoundsException){
-                            System.out.println(gridX + "; " + gridY);
+                           // System.out.println(gridX + "; " + gridY);
                         }
                     }
 
@@ -146,7 +146,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(1600,2400, 4000);
+        Sky sky = new Sky(1600,2400, 8000);
         long lastTime;
         double avg = 0;
         int i = 1;
@@ -155,7 +155,8 @@ public class Sky{
             lastTime = System.nanoTime();
             sky.update();
             avg += (1000000000.0 / (System.nanoTime() - lastTime));
-            System.out.println(avg/i);
+            if (i%10==0)
+				System.out.println(avg/i);
             i++;
         }
     }
