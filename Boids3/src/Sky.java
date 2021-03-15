@@ -147,7 +147,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(960,1600, 3000);
+        Sky sky = new Sky(960,1600, 4000);
         long lastTime;
         double avg = 0;
         int i = 1;
