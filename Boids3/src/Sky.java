@@ -65,12 +65,9 @@ public class Sky{
                            // System.out.println(gridX + "; " + gridY);
                         }
                     }
-
                 }
-
             }
         }
-
     }
 
     private Boid[] inRange(Boid pBoid) {
@@ -150,7 +147,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(960,1600, 8000);
+        Sky sky = new Sky(960,1600, 3000);
         long lastTime;
         double avg = 0;
         int i = 1;
