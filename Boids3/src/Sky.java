@@ -3,6 +3,7 @@ import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 public class Sky{
@@ -39,7 +40,7 @@ public class Sky{
         System.out.println("Grid size is " + width/Boid.visibility + " x " + height/Boid.visibility);
         fillNewGridWithSwarm();
 
-        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
 
     }
 
@@ -55,7 +56,7 @@ public class Sky{
         System.out.println("New Swarm filled in Grid.");
     }
 
-    private void updateGrid () {
+    private synchronized void updateGrid () {
         for(int x = 0; x<boidGrid.length; x++) {
             for (int y=0; y<boidGrid[x].length; y++) {
                 ListIterator<Boid> listIterator = boidGrid[x][y].listIterator();
@@ -116,7 +117,7 @@ public class Sky{
     }
 
 
-    public void update () {
+    public void update () throws InterruptedException {
 
 
         for (Boid b:swarm) {
@@ -140,10 +141,14 @@ public class Sky{
             //updates the boids x,y based on the velocity
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
-            
-            
         }
+        /*try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
         //threads.shutdown();
+        threads.awaitTermination(20, TimeUnit.MILLISECONDS);
         updateGrid();
         //calcLeader();
         Canvas.getInstance().repaint();
@@ -163,16 +168,16 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(960,1600, 4000);
+        Sky sky = new Sky(960,1600, 3000);
         long lastTime;
         double avg = 0;
         int i = 1;
 
         while (true){
             lastTime = System.nanoTime();
-            sky.update();
+            try {sky.update();} catch (Exception e) {};
             avg += (1000000000.0 / (System.nanoTime() - lastTime));
-            if (i%1000==0)
+            if (i%10==0)
 				System.out.println(avg/i);
             i++;
         }
