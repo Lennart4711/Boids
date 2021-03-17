@@ -1,5 +1,9 @@
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 
 public class Sky{
     public static int width, height;
@@ -8,7 +12,9 @@ public class Sky{
     private Boid ball;
     private Boid[] subSwarm;
 
-    private LinkedList[][] boidGrid;
+    public volatile static LinkedList[][] boidGrid;
+
+    ThreadPoolExecutor threads;
 
     public Sky(int height, int width, int boids) {
         //for Canvas size
@@ -32,7 +38,11 @@ public class Sky{
         }
         System.out.println("Grid size is " + width/Boid.visibility + " x " + height/Boid.visibility);
         fillNewGridWithSwarm();
+
+        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+
     }
+
 
     private void fillNewGridWithSwarm () {
         for (Boid b : swarm) {
@@ -106,13 +116,18 @@ public class Sky{
     }
 
 
-    public void update() {
+    public void update () {
+
+
         for (Boid b:swarm) {
 
             //choose boids in grids in visibility
 
             long start = System.nanoTime();
-            b.flock(inRange(b));
+            InRageSelector irs = new InRageSelector(b);
+            threads.execute(irs);
+            irs = null;
+            //b.flock(inRange(b));
             //b.flock(swarm);
             //System.out.println(System.nanoTime()-start+" ns for flock \n");
 
@@ -128,6 +143,7 @@ public class Sky{
             
             
         }
+        //threads.shutdown();
         updateGrid();
         //calcLeader();
         Canvas.getInstance().repaint();
@@ -156,7 +172,7 @@ public class Sky{
             lastTime = System.nanoTime();
             sky.update();
             avg += (1000000000.0 / (System.nanoTime() - lastTime));
-            if (i%10==0)
+            if (i%1000==0)
 				System.out.println(avg/i);
             i++;
         }
