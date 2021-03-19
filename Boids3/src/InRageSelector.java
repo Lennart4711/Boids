@@ -5,16 +5,18 @@ import java.util.concurrent.Executors;
 
 public class InRageSelector implements Runnable {
 
-    Boid oneBoid;
+    private Boid oneBoid;
+    private LinkedList[][] boidGrid;
 
-    public InRageSelector(Boid pBoid) {
+    public InRageSelector(Boid pBoid, LinkedList[][] pBoidGrid) {
         oneBoid = pBoid;
+        boidGrid = pBoidGrid;
     }
 
     @Override
     public void run() {
 
-        oneBoid.flock(inRange(oneBoid));
+        oneBoid.flock(inRange());
         oneBoid.keepInBound();
         oneBoid.limitSpeed();
 
@@ -23,15 +25,16 @@ public class InRageSelector implements Runnable {
         //updates the boids x,y based on the velocity
         oneBoid.setxPos(oneBoid.getxPos()+oneBoid.getdX());
         oneBoid.setyPos(oneBoid.getyPos()+oneBoid.getdY());
+        Sky.taskCompleted();
     }
 
-    private synchronized Boid[] inRange(Boid pBoid) {
+    private synchronized Boid[] inRange() {
 
         LinkedList<Boid> tmpBoids = new LinkedList<Boid>();
         ListIterator<Boid> listIterator;
         //get Grid coord
-        int gridx = (int)(pBoid.getxPos()/Boid.visibility);
-        int gridy = (int)(pBoid.getyPos()/Boid.visibility);
+        int gridx = (int)(oneBoid.getxPos()/Boid.visibility);
+        int gridy = (int)(oneBoid.getyPos()/Boid.visibility);
 
         long start = System.nanoTime();
         for (int dx = -1; dx<2; dx++) {
@@ -41,7 +44,7 @@ public class InRageSelector implements Runnable {
                     int relGridY = gridy - dy;
 
                     if (relGridX>=0 && relGridY>=0) {
-                        listIterator = Sky.boidGrid[relGridX][relGridY].listIterator();
+                        listIterator = boidGrid[relGridX][relGridY].listIterator();
 
                         while (listIterator.hasNext()) {
                             tmpBoids.add(listIterator.next());

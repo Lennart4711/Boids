@@ -13,9 +13,10 @@ public class Sky{
     private Boid ball;
     private Boid[] subSwarm;
 
-    public static LinkedList[][] boidGrid;
+    private LinkedList[][] boidGrid;
 
-    ThreadPoolExecutor threads;
+    private ThreadPoolExecutor threads;
+    private static long activeTasks;
 
     public Sky(int height, int width, int boids) {
         //for Canvas size
@@ -40,8 +41,10 @@ public class Sky{
         System.out.println("Grid size is " + width/Boid.visibility + " x " + height/Boid.visibility);
         fillNewGridWithSwarm();
 
-        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
+        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
         //threads = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        activeTasks = 0;
+
     }
 
 
@@ -100,7 +103,7 @@ public class Sky{
                         listIterator = boidGrid[relGridX][relGridY].listIterator();
 
                         while (listIterator.hasNext()) {
-                            tmpBoids.add(listIterator.next());
+                            tmpBoids.add((Boid)listIterator.next());
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException aiobe) {
@@ -116,6 +119,13 @@ public class Sky{
         return retB;
     }
 
+    public static synchronized void taskCompleted() {
+        activeTasks += 1;
+    }
+
+    public static synchronized long getTasksCompleted(){
+        return activeTasks;
+    }
 
     public void update () throws InterruptedException {
 
@@ -124,9 +134,9 @@ public class Sky{
 
             //choose boids in grids in visibility
 
-            long start = System.nanoTime();
-            InRageSelector irs = new InRageSelector(b);
-           threads.execute(irs);
+            //long start = System.nanoTime();
+            InRageSelector irs = new InRageSelector(b, boidGrid);
+            threads.execute(irs);
             //irs = null;
            // b.flock(inRange(b));
             //b.flock(swarm);
@@ -142,9 +152,10 @@ public class Sky{
             //b.setxPos(b.getxPos()+b.getdX());
            //b.setyPos(b.getyPos()+b.getdY());
         }
-		threads.shutdown();
-		while (!threads.isTerminated()) {}
-        // threads.awaitTermination(300, TimeUnit.NANOSECONDS);
+
+        while (getTasksCompleted() < swarm.length) {};
+        activeTasks = 0;
+
         /*
         for (Boid b:swarm) {
             b.getBody().translateTo(b.getxPos(), b.getyPos());//moves the graphics object
@@ -173,7 +184,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(960,1600, 2000);
+        Sky sky = new Sky(960,1600, 8000);
         long lastTime;
         double avg = 0;
         int i = 1;
