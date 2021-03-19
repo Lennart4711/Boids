@@ -142,8 +142,9 @@ public class Sky{
             //b.setxPos(b.getxPos()+b.getdX());
            //b.setyPos(b.getyPos()+b.getdY());
         }
-
-         threads.awaitTermination(300, TimeUnit.NANOSECONDS);
+		threads.shutdown();
+		while (!threads.isTerminated()) {}
+        // threads.awaitTermination(300, TimeUnit.NANOSECONDS);
         /*
         for (Boid b:swarm) {
             b.getBody().translateTo(b.getxPos(), b.getyPos());//moves the graphics object
