@@ -13,7 +13,16 @@ public class InRageSelector implements Runnable {
 
     @Override
     public void run() {
+
         oneBoid.flock(inRange(oneBoid));
+        oneBoid.keepInBound();
+        oneBoid.limitSpeed();
+
+        oneBoid.getBody().translateTo(oneBoid.getxPos(), oneBoid.getyPos());//moves the graphics object
+        //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
+        //updates the boids x,y based on the velocity
+        oneBoid.setxPos(oneBoid.getxPos()+oneBoid.getdX());
+        oneBoid.setyPos(oneBoid.getyPos()+oneBoid.getdY());
     }
 
     private synchronized Boid[] inRange(Boid pBoid) {

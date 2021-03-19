@@ -13,7 +13,7 @@ public class Sky{
     private Boid ball;
     private Boid[] subSwarm;
 
-    public volatile static LinkedList[][] boidGrid;
+    public static LinkedList[][] boidGrid;
 
     ThreadPoolExecutor threads;
 
@@ -40,8 +40,8 @@ public class Sky{
         System.out.println("Grid size is " + width/Boid.visibility + " x " + height/Boid.visibility);
         fillNewGridWithSwarm();
 
-        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
-
+        threads = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
+        //threads = (ThreadPoolExecutor) Executors.newCachedThreadPool();
     }
 
 
@@ -56,7 +56,7 @@ public class Sky{
         System.out.println("New Swarm filled in Grid.");
     }
 
-    private synchronized void updateGrid () {
+    private void updateGrid () {
         for(int x = 0; x<boidGrid.length; x++) {
             for (int y=0; y<boidGrid[x].length; y++) {
                 ListIterator<Boid> listIterator = boidGrid[x][y].listIterator();
@@ -126,28 +126,32 @@ public class Sky{
 
             long start = System.nanoTime();
             InRageSelector irs = new InRageSelector(b);
-            threads.execute(irs);
+           threads.execute(irs);
             //irs = null;
-            //b.flock(inRange(b));
+           // b.flock(inRange(b));
             //b.flock(swarm);
             //System.out.println(System.nanoTime()-start+" ns for flock \n");
 
-            b.keepInBound();
-            b.limitSpeed();
+            //b.keepInBound();
+            //b.limitSpeed();
             // b.resetBounds();
             // b.flyToMagnet(ball);
-
+            //b.getBody().translateTo(b.getxPos(), b.getyPos());//moves the graphics object
+            //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
+            //updates the boids x,y based on the velocity
+            //b.setxPos(b.getxPos()+b.getdX());
+           //b.setyPos(b.getyPos()+b.getdY());
         }
 
-        threads.awaitTermination(20, TimeUnit.MILLISECONDS);
-
+         threads.awaitTermination(300, TimeUnit.NANOSECONDS);
+        /*
         for (Boid b:swarm) {
             b.getBody().translateTo(b.getxPos(), b.getyPos());//moves the graphics object
             //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
             //updates the boids x,y based on the velocity
             b.setxPos(b.getxPos()+b.getdX());
             b.setyPos(b.getyPos()+b.getdY());
-        }
+        }*/
 
         updateGrid();
         //calcLeader();
@@ -168,7 +172,7 @@ public class Sky{
     }
 
     public static void main(String[] args) {
-        Sky sky = new Sky(960,1600, 3000);
+        Sky sky = new Sky(960,1600, 2000);
         long lastTime;
         double avg = 0;
         int i = 1;
