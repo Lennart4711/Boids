@@ -3,32 +3,34 @@ import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class InRageSelector implements Runnable {
+public class MovementCalculator implements Runnable {
 
-    private Boid oneBoid;
+    private Boid[] boidSubSet;
     private LinkedList[][] boidGrid;
 
-    public InRageSelector(Boid pBoid, LinkedList[][] pBoidGrid) {
-        oneBoid = pBoid;
+    public MovementCalculator(Boid[] pBoidSubSet, LinkedList[][] pBoidGrid) {
+        boidSubSet = pBoidSubSet;
         boidGrid = pBoidGrid;
     }
 
     @Override
     public void run() {
+        for (Boid oneBoid: boidSubSet) {
+            oneBoid.flock(inRange(oneBoid));
+            oneBoid.keepInBound();
+            oneBoid.limitSpeed();
 
-        oneBoid.flock(inRange());
-        oneBoid.keepInBound();
-        oneBoid.limitSpeed();
+            oneBoid.getBody().translateTo(oneBoid.getxPos(), oneBoid.getyPos());//moves the graphics object
+            //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
+            //updates the boids x,y based on the velocity
+            oneBoid.setxPos(oneBoid.getxPos() + oneBoid.getdX());
+            oneBoid.setyPos(oneBoid.getyPos() + oneBoid.getdY());
+            Sky.taskCompleted();
+        }
 
-        oneBoid.getBody().translateTo(oneBoid.getxPos(), oneBoid.getyPos());//moves the graphics object
-        //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
-        //updates the boids x,y based on the velocity
-        oneBoid.setxPos(oneBoid.getxPos()+oneBoid.getdX());
-        oneBoid.setyPos(oneBoid.getyPos()+oneBoid.getdY());
-        Sky.taskCompleted();
     }
 
-    private synchronized Boid[] inRange() {
+    private synchronized Boid[] inRange(Boid oneBoid) {
 
         LinkedList<Boid> tmpBoids = new LinkedList<Boid>();
         ListIterator<Boid> listIterator;

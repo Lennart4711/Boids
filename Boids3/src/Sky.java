@@ -11,7 +11,6 @@ public class Sky{
 
     private static Boid[] swarm;
     private Boid ball;
-    private Boid[] subSwarm;
 
     private LinkedList[][] boidGrid;
 
@@ -129,28 +128,15 @@ public class Sky{
 
     public void update () throws InterruptedException {
 
+        int subSetSize = 10;
 
-        for (Boid b:swarm) {
-
-            //choose boids in grids in visibility
-
-            //long start = System.nanoTime();
-            InRageSelector irs = new InRageSelector(b, boidGrid);
-            threads.execute(irs);
-            //irs = null;
-           // b.flock(inRange(b));
-            //b.flock(swarm);
-            //System.out.println(System.nanoTime()-start+" ns for flock \n");
-
-            //b.keepInBound();
-            //b.limitSpeed();
-            // b.resetBounds();
-            // b.flyToMagnet(ball);
-            //b.getBody().translateTo(b.getxPos(), b.getyPos());//moves the graphics object
-            //b.getVec().translateTo(b.getxPos()+3.5, b.getyPos()+3.5, b.getxPos()+b.getdX()*6+3.5, b.getyPos()+b.getdY()*6+3.5); //moves velocity vector graphics object
-            //updates the boids x,y based on the velocity
-            //b.setxPos(b.getxPos()+b.getdX());
-           //b.setyPos(b.getyPos()+b.getdY());
+        for (int offSet = 0; offSet<swarm.length; offSet += subSetSize) {
+            Boid[] subSet = new Boid[subSetSize];
+            for (int s=0; s<subSetSize && s<swarm.length; s++) {
+                subSet[s] = swarm[s+offSet];
+            }
+            MovementCalculator moveBoids = new MovementCalculator(subSet, boidGrid);
+            threads.execute(moveBoids);
         }
 
         while (getTasksCompleted() < swarm.length) {};
